@@ -16,7 +16,13 @@
 <template name="bills">
   <ul>
     {{#each bills}}
-      <li>{{name}}: {{price}} due {{period}} on {{due}} by {{owner.displayName}}</li>
+      <li>
+        {{name}}: {{price}}
+        due {{period}}
+        on {{due}}
+        by {{owner.displayName}}
+        <button class="remove">Remove</button>
+      </li>
     {{/each}}
   </ul>
 </template>

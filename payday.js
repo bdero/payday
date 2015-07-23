@@ -17,7 +17,7 @@ if (Meteor.isClient) {
 
   var getUserWithDisplay = function(user) {
     if (!user) {
-      user = { displayName: "Unknown User" };
+      user = {displayName: "Unknown User"};
     } else {
       user.displayName = (
         user.hasOwnProperty("profile")
@@ -40,6 +40,12 @@ if (Meteor.isClient) {
       });
     }
   });
+  Template.bills.events({
+    "click .remove": function(event) {
+      Meteor.call("removeBill", this._id);
+    }
+  });
+
   Template.createBillForm.helpers({
     users: function() {
       return Meteor.users.find({}).map(function(user) {
@@ -86,7 +92,10 @@ Meteor.methods({
 
     Bills.insert(bill);
   },
-  removeBill: function(bill) {
+  removeBill: function(billId) {
     forceAuthenticated();
+
+    check(billId, String);
+    Bills.remove({_id: billId});
   }
 });
