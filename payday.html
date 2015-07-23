@@ -6,9 +6,14 @@
   <h1>Payday</h1>
 
   {{> loginButtons}}
+
+  {{> bills}}
 </body>
 
-<template name="hello">
-  <button>Click Me</button>
-  <p>You've pressed the button {{counter}} times.</p>
+<template name="bills">
+  <ul>
+    {{#each bills}}
+      <li>{{name}}: {{price}} due {{period}} on {{due}}</li>
+    {{/each}}
+  </ul>
 </template>
