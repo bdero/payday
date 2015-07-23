@@ -19,7 +19,6 @@ if (Meteor.isClient) {
     if (!user) {
       user = { displayName: "Unknown User" };
     } else {
-      console.log(user);
       user.displayName = (
         user.hasOwnProperty("profile")
         && user.profile.hasOwnProperty("name")
@@ -46,10 +45,14 @@ if (Meteor.isClient) {
       return Meteor.users.find({}).map(function(user) {
         return getUserWithDisplay(user);
       });
+    },
+    currentUserIdIs: function(userId) {
+      return Meteor.user()._id === this._id;
     }
   });
 }
 
+// Throw an exception if the user isn't authenticated
 var forceAuthenticated = function() {
   var user = Meteor.user();
   if (Meteor.user() === null) {
@@ -62,7 +65,6 @@ var forceAuthenticated = function() {
 
 Meteor.methods({
   createBill: function(bill) {
-    // Make sure the user is authenticated
     forceAuthenticated();
 
     // Validate types

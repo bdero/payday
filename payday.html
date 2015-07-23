@@ -8,7 +8,9 @@
   {{> loginButtons}}
 
   {{> bills}}
-  {{> createBillForm}}
+  {{#if currentUser}}
+    {{> createBillForm}}
+  {{/if}}
 </body>
 
 <template name="bills">
@@ -20,9 +22,12 @@
 </template>
 
 <template name="createBillForm">
-  <select>
+  <select autocomplete="off">
     {{#each users}}
-      <option value="{{_id}}">{{displayName}}</option>
+      <option value="{{_id}}"
+              selected="{{#if currentUserIdIs}}selected{{/if}}">
+        {{displayName}}
+      </option>
     {{/each}}
   </select>
 </template>
