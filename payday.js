@@ -1,31 +1,69 @@
 var Bills = new Mongo.Collection("bills");
 
 if (Meteor.isServer) {
+  // Define publications
   Meteor.publish("bills", function() {
     return Bills.find({});
+  });
+  Meteor.publish("users", function() {
+    return Meteor.users.find({});
   });
 }
 
 if (Meteor.isClient) {
+  // Define subscriptions
   Meteor.subscribe("bills");
+  Meteor.subscribe("users");
+
+  var getUserWithDisplay = function(user) {
+    if (!user) {
+      user = { displayName: "Unknown User" };
+    } else {
+      console.log(user);
+      user.displayName = (
+        user.hasOwnProperty("profile")
+        && user.profile.hasOwnProperty("name")
+      )
+        ? user.profile.name
+        : user.emails[0].address;
+    }
+
+    return user;
+  };
 
   Template.bills.helpers({
     bills: function () {
-      return Bills.find({});
+      return Bills.find({}).map(function(bill) {
+        // Resolve user IDs
+        var owner = Meteor.users.findOne({_id: bill.owner})
+        bill.owner = getUserWithDisplay(owner);
+        return bill;
+      });
+    }
+  });
+  Template.createBillForm.helpers({
+    users: function() {
+      return Meteor.users.find({}).map(function(user) {
+        return getUserWithDisplay(user);
+      });
     }
   });
 }
 
+var forceAuthenticated = function() {
+  var user = Meteor.user();
+  if (Meteor.user() === null) {
+    throw new Meteor.Error(
+      "not-authorized",
+      "User not authorized to perform this action"
+    );
+  }
+};
+
 Meteor.methods({
   createBill: function(bill) {
     // Make sure the user is authenticated
-    var user = Meteor.user();
-    if (Meteor.user() === null) {
-      throw new Meteor.Error(
-        "not-authorized",
-        "User not authorized to perform this action"
-      );
-    }
+    forceAuthenticated();
 
     // Validate types
     check(bill, {
@@ -37,7 +75,7 @@ Meteor.methods({
     });
 
     // Validate that the selected user exists
-    if (Meteor.users.findOne({_id: bill.owner})) {
+    if (!Meteor.users.findOne({_id: bill.owner})) {
       throw new Meteor.Error(
         "invalid-user",
         "Couldn't find user with ID: " + bill.owner
@@ -45,5 +83,8 @@ Meteor.methods({
     }
 
     Bills.insert(bill);
+  },
+  removeBill: function(bill) {
+    forceAuthenticated();
   }
 });
