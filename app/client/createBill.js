@@ -57,7 +57,22 @@ Template.createBillForm.events({
 
     // Set due selection
     $("#createBill #due option:selected").attr("selected", null);
-    $("#createBill #due option[value=\"\"]").attr("selected", "selected");
+    $("#createBill #due option[value='']").attr("selected", "selected");
+  },
+  "click #createBill input[type='submit']": function(event) {
+    event.preventDefault();
+
+    // Collect fields
+    var form = $("#createBill")[0].elements;
+    var bill = {
+      name: form.name.value,
+      price: Number.parseFloat(form.price.value),
+      owner: form.owner.value,
+      period: form.period.value,
+      due: Number.parseInt(form.due.value)
+    };
+
+    Meteor.call("createBill", bill);
   }
 });
 
