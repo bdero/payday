@@ -63,16 +63,18 @@ Template.createBillForm.events({
     event.preventDefault();
 
     // Collect fields
-    var form = $("#createBill")[0].elements;
+    var form = $("#createBill")[0];
+    var elements = form.elements;
     var bill = {
-      name: form.name.value,
-      price: Number.parseFloat(form.price.value),
-      owner: form.owner.value,
-      period: form.period.value,
-      due: Number.parseInt(form.due.value)
+      name: elements.name.value,
+      price: Number.parseFloat(elements.price.value),
+      owner: elements.owner.value,
+      period: elements.period.value,
+      due: Number.parseInt(elements.due.value)
     };
 
     Meteor.call("createBill", bill);
+    form.reset();
   }
 });
 
