@@ -8,3 +8,5 @@ meteor-platform
 accounts-ui
 accounts-github
 accounts-password
+jquery
+stevezhu:lodash
