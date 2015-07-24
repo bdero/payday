@@ -1,0 +1,60 @@
+<template name="createBillForm">
+  <form id="createBill">
+    <fieldset>
+      <div>
+        <label for="name">Name:</label>
+        <input name="name" id="name" type="text" placeholder="E.g.: Internet">
+      </div>
+
+      <div>
+        <label for="price">Price ($):</label>
+        <input name="price" id="price" type="text" placeholder="E.g.: 60.00">
+      </div>
+
+      <div>
+        <label for="owner">Owner:</label>
+        <select name="owner" id="owner" autocomplete="off">
+          {{#each users}}
+            <option value="{{_id}}"
+                    selected="{{#if currentUserIdIs}}selected{{/if}}">
+              {{displayName}}
+            </option>
+          {{/each}}
+        </select>
+      </div>
+
+      <div>
+        <label for="period">Pay period:</label>
+        <select name="period" id="period" autocomplete="off">
+          <option value=""
+                  selected="selected"
+                  disabled>
+            Select period
+          </option>
+          <option value="weekly">Weekly</option>
+          <option value="monthly">Monthly</option>
+          <option value="yearly">Yearly</option>
+        </select>
+        {{#if periodSelected}}
+          {{dueMap.prefix}}
+          {{> dueSelect}}
+        {{/if}}
+      </div>
+    </fieldset>
+  </form>
+</template>
+
+<template name="dueSelect">
+  <select name="due" id="due" autocomplete="off">
+    <option value=""
+            selected="selected"
+            disabled>
+      {{dueMap.selectName}}
+    </option>
+    {{#each dueMap.selection}}
+      <option value="{{[0]}}">
+        {{[1]}}
+      </option>
+    {{/each}}
+  </select>
+</template>
