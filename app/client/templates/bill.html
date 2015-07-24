@@ -6,7 +6,9 @@
         due {{period}}
         on {{due}}
         by {{owner.displayName}}
-        <button class="remove">Remove</button>
+        {{#if currentUser}}
+          <button class="remove">Remove</button>
+        {{/if}}
       </li>
     {{/each}}
   </ul>
